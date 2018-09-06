@@ -37,11 +37,12 @@ if __name__ == '__main__':
               % (timestamp, init_url_prefix, video_segment_prefix, num_total_segments - 1))
         os.system('cd temp_%s && type part_*.ts > ../%s.ts && cd ..' % (timestamp, file_name))
         os.system('rd /s /q temp_%s' % timestamp)
-    elif platform.system() == 'Linux':
+    elif platform.system() == 'Linux' or platform.system() == 'Darwin':
+        init_url_prefix = init_url_prefix.replace("(", "\(").replace(")", "\)")
         os.system('mkdir ./temp_%s/' % timestamp)
         os.system('curl -o ./temp_%s/part_#1.ts %s/%s\[000-%d\].ts'
                 % (timestamp, init_url_prefix, video_segment_prefix, num_total_segments - 1))
-        os.system('cat ./temp_%s/part* > %s.ts' % (timestamp, file_name))
+        os.system('cat ./temp_%s/part* > "%s.ts"' % (timestamp, file_name))
         os.system('rm -rf ./temp_%s/' % timestamp)
     else:
         assert(False),'No valid platform detected.'
